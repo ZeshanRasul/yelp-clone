@@ -13,4 +13,10 @@ describe Restaurant, type: :model do
     expect(restaurant).to have(1).error_on(:name)
     expect(restaurant).not_to be_valid
   end
+
+  it 'is not valid if the user tries to enter the same restaurant twice' do
+    Restaurant.create(name: 'Moes Tavern')
+    restaurant = Restaurant.new(name: 'Moes Tavern')
+    expect(restaurant).to have(1).error_on(:name)
+  end
 end
