@@ -26,6 +26,7 @@ feature 'restaurants' do
   context 'creating restaurants' do
     scenario 'prompts user to fill out a form, then displays the new restaurant' do
       visit '/restaurants'
+      sign_up
       click_link 'Add a restaurant'
       fill_in 'Name', with: 'KFC'
       click_button 'Create Restaurant'
@@ -33,9 +34,18 @@ feature 'restaurants' do
       expect(current_path).to eq '/restaurants'
     end
 
+    scenario 'does not allow adding restaurants if user not logged in' do
+      visit '/restaurants'
+      click_link 'Add a restaurant'
+      expect(page).to have_content 'Log in'
+    end
+
+
+
     context 'an invalid restaurant' do
       it 'does not let you submit a name that is too short' do
         visit '/restaurants'
+        sign_up
         click_link 'Add a restaurant'
         fill_in 'Name', with: 'kf'
         click_button 'Create Restaurant'
@@ -43,8 +53,9 @@ feature 'restaurants' do
         expect(page).to have_content 'error'
       end
     end
-
   end
+
+
 
   context 'viewing restaurants' do
     let!(:kfc){Restaurant.create(name:'KFC')}
@@ -62,6 +73,7 @@ feature 'restaurants' do
 
     scenario 'let a user edit a restaurant' do
       visit '/restaurants'
+      sign_up
       click_link 'Edit KFC'
       fill_in 'Name', with: 'Kentucky Fried Chicken'
       click_button 'Update Restaurant'
@@ -75,6 +87,7 @@ feature 'restaurants' do
 
     scenario 'let a user delete a restaurant' do
       visit '/restaurants'
+      sign_up
       click_link 'Delete KFC'
       expect(page).not_to have_content 'KFC'
       expect(page).to have_content 'Restaurant deleted successfully'
