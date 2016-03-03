@@ -56,6 +56,30 @@ feature 'reviewing' do
     expect(page).to have_content 'Review deleted'
   end
 
+  def sign_up
+    visit '/'
+    click_link('Sign up')
+    fill_in('Email', with: 'test@example.com')
+    fill_in('Password', with: 'testtest')
+    fill_in('Password confirmation', with: 'testtest')
+    click_button('Sign up')
+  end
+
+  def sign_up_bob
+    visit '/'
+    click_link('Sign up')
+    fill_in('Email', with: 'bob@example.com')
+    fill_in('Password', with: 'testtest')
+    fill_in('Password confirmation', with: 'testtest')
+    click_button('Sign up')
+  end
+
+  def create_kfc
+    click_link 'Add a restaurant'
+    fill_in 'Name', with: 'KFC'
+    click_button 'Create Restaurant'
+  end
+
   def leave_review(thoughts, rating)
     visit '/restaurants'
     click_link 'Review KFC'
@@ -65,9 +89,13 @@ feature 'reviewing' do
   end
 
   scenario 'displays an average rating for all reviews' do
+    sign_up
+    create_kfc
     leave_review('So so', '3')
+    click_link 'Sign out'
+    sign_up_bob
     leave_review('Great', '5')
-    expect(page).to have_content('Average rating: 4')
+    expect(page).to have_content('Average rating: ★★★★☆')
   end
 
 end
