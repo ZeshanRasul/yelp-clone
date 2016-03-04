@@ -1,5 +1,6 @@
 class Review < ActiveRecord::Base
 
+  has_many :endorsements
   belongs_to :restaurant
   belongs_to :user
 
